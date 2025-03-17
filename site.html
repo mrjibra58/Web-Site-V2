@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع التشفير وفك التشفير</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #0f2d3c, #092636);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: white;
+            text-align: center;
+        }
+        h1 {
+            font-size: 42px;
+            text-shadow: 2px 2px 5px rgba(255, 255, 0, 0.7);
+            margin-bottom: 20px;
+        }
+        .input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 300px;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            text-align: center;
+            font-size: 22px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        button {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            cursor: pointer;
+            font-size: 22px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            height: 50px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .output-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding: 15px;
+        }
+        .char-box {
+            width: 80px;
+            height: 80px;
+            margin: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: white;
+            color: black;
+            font-size: 32px;
+            font-weight: bold;
+            border: 3px solid black;
+            transition: 0.5s;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+            position: relative;
+        }
+        .char-box.correct {
+            background: rgba(0, 255, 0, 0.8);
+            color: white;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 1);
+            animation: glow 1s infinite alternate;
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.6); }
+            100% { box-shadow: 0 0 20px rgba(0, 255, 0, 1); }
+        }
+        h3 {
+            margin-top: 15px;
+            font-size: 28px;
+        }
+        .copy-btn {
+            padding: 8px 12px;
+            font-size: 18px;
+            margin-left: 10px;
+            background: #28a745;
+        }
+        .copy-btn:hover {
+            background: #218838;
+        }
+    </style>
+<meta name="google-site-verification" content="eA6plx34CjggSSfJg5-E9Ivts1INkGsHegwsBFfa4ow" />
+</head>
+<body>
+    <h1>🔐 موقع التشفير وفك التشفير 🔓</h1>
+    <div class="input-container">
+        <input type="text" id="inputText" placeholder="أدخل النص هنا...">
+        <button onclick="encrypt()">🔐 تشفير</button>
+        <button onclick="decrypt()">🔓 فك التشفير</button>
+    </div>
+    <h3>النتائج المشفرة:</h3>
+    <div>
+        <span id="encryptedResult"></span>
+        <button class="copy-btn" onclick="copyText()">📋 نسخ</button>
+    </div>
+    <h3>عملية فك التشفير:</h3>
+    <div id="output" class="output-container"></div>
+    <h3 id="finalResult"></h3>
+    
+    <script>
+        function encrypt() {
+            let text = document.getElementById("inputText").value;
+            let encryptedText = btoa(unescape(encodeURIComponent(text)));
+            document.getElementById("encryptedResult").innerText = encryptedText;
+        }
+
+        function decrypt() {
+            let text = document.getElementById("inputText").value;
+            try {
+                let decryptedText = decodeURIComponent(escape(atob(text)));
+                document.getElementById("output").innerHTML = '';
+                decryptedText.split('').forEach((char, index) => {
+                    let box = document.createElement('div');
+                    box.classList.add('char-box');
+                    box.innerText = "";
+                    document.getElementById("output").appendChild(box);
+                    
+                    let interval = setInterval(() => {
+                        let randChar = String.fromCharCode(33 + Math.random() * 94);
+                        box.innerText = randChar;
+                    }, 50);
+                    
+                    setTimeout(() => {
+                        clearInterval(interval);
+                        box.innerText = char;
+                        box.classList.add('correct');
+                    }, index * 500);
+                });
+                setTimeout(() => {
+                    document.getElementById("finalResult").innerText = "🔓 الكلمة هي: " + decryptedText;
+                }, decryptedText.length * 500 + 500);
+            } catch (e) {
+                alert("⚠️ نص غير صالح لفك التشفير");
+            }
+        }
+        
+        function copyText() {
+            let encryptedText = document.getElementById("encryptedResult").innerText;
+            navigator.clipboard.writeText(encryptedText);
+        }
+    </script>
+</body>
+</html>
